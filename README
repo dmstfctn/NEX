@@ -5,6 +5,8 @@ The phone then transmits the sound by means of a phone call, either over the voi
 
 In this way, the NE4 turns a smartphone into a parasite, piggybacking on its connectivity to enable network exploration, investigation, and performance.
 
+The NE4 was used as part of [this performance](https://demystification.co/mmittee/network-study-xv/) in April 2018.
+
 The NE4 is built on the ESP8266, a cheap, readily available wifi capable microcontroller. This repository contains the code that it runs, and utilities that help write this.
 
 ##ne_esp8266
