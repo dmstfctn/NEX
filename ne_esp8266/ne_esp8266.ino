@@ -130,8 +130,7 @@ void loop() {
     sound4.tick();
     sound5.tick();
    
-    //audio_writeDAC( ((sound1.sample + sound2.sample + sound3.sample) /10 )+ ((sound4.sample + sound5.sample) / 2) );
-    audio_writeDAC( (sound4.sample + sound5.sample) / 2);
+    audio_writeDAC( ((sound1.sample + sound2.sample + sound3.sample) /20 )+ ((sound4.sample + sound5.sample) / 2) );
   }
   
   yield();
