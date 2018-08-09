@@ -7,6 +7,8 @@
 #include "./audio.h"
 #include "./wifi.h"
 
+#include "./fx.h"
+
 #include "./VoiceTriangle.h"
 #include "./VoiceSquare.h"
 #include "./VoiceSaw.h"
@@ -29,12 +31,13 @@ int pBTN_0 = HIGH;
 int BTN_1  = HIGH;
 int pBTN_1 = HIGH;
 
+int distortAmount = 0;
+
 VoiceSquare sound1( SAMPLE_RATE / 220 );
 VoiceSquare sound2( SAMPLE_RATE / 440 );
 VoiceSquare sound3( SAMPLE_RATE / 880 );
 
 VoiceTriangle sound4( SAMPLE_RATE / 55 );
-VoiceSaw sound5( SAMPLE_RATE / 110 );
 
 void onPacket( uint8_t *buf, uint16_t len ){
   t = millis();
@@ -93,7 +96,6 @@ void setup() {
   sound3.adsr.setADSR( SAMPLE_RATE / 100, SAMPLE_RATE / 100, 0.8, SAMPLE_RATE / 100 );
   
   sound4.adsr.setADSR( SAMPLE_RATE / 4, SAMPLE_RATE / 10, 0.9, SAMPLE_RATE );
-  sound5.adsr.setADSR( SAMPLE_RATE / 4, SAMPLE_RATE / 10, 0.9, SAMPLE_RATE );
 
 }
 
@@ -106,31 +108,40 @@ void loop() {
   BTN_1 = digitalRead( 1 );
 
   if( BTN_0 != pBTN_0 ){
-    if( BTN_0 == LOW ){
+    if( BTN_0 == LOW ){ // button 0 pressed
       sound4.adsr.startEnv();
-    } else {
+    } else { // button 0 released
       sound4.adsr.releaseEnv();
     }
   }
   if( BTN_1 != pBTN_1 ){
-    if( BTN_1 == LOW ){
-      sound5.adsr.startEnv();
-    } else {
-      sound5.adsr.releaseEnv();
+    if( BTN_1 == LOW ){ // button 1 pressed
+      distortAmount += 1;
+      if( distortAmount > 20 ){
+        distortAmount = 0;
+      }
+    } else { // button 1 released
+      // nothing
     }
   }
   
   yield();
   // if there's space in the audio buffer, add a sample
   if( i2s_available() > 0 ){ 
+    //oscillators
     sound1.tick();
     sound2.tick();
     sound3.tick();
-
     sound4.tick();
-    sound5.tick();
-   
-    audio_writeDAC( ((sound1.sample + sound2.sample + sound3.sample) /20 )+ ((sound4.sample + sound5.sample) / 2) );
+
+    //mix
+    uint16_t s = ((sound1.sample + sound2.sample + sound3.sample) /20 ) + (sound4.sample/2);
+
+    //fx
+    s = fx_hardclip( s, distortAmount );
+
+    //out
+    audio_writeDAC( s );
   }
   
   yield();
