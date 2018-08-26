@@ -1,5 +1,5 @@
 # NE4
-The NE4 is a small device that collects live data from the wireless networks surrounding it, using this data to trigger or generate sound. It passes the sound directly to a phone via the audio port's microphone in, it's powered through the phone's USB port. 
+The NE4 is a small device that collects live data from the wireless networks surrounding it, using this data to trigger or generate sound. It passes the sound directly to a phone via the audio port's microphone in, it's powered through the phone's USB port.
 
 The phone then transmits the sound by means of a phone call, either over the voice network or through 3/4G ensuring that it doesn't interfere with the signals the device picks up.
 
@@ -8,6 +8,17 @@ In this way, the NE4 turns a smartphone into a parasite, piggybacking on its con
 The NE4 was used for [Network Study XV](https://demystification.co/mmittee/network-study-xv/) in April 2018.
 
 The NE4 is built on the ESP8266, a cheap, readily available wifi capable microcontroller. This repository contains the code that it runs, and utilities that help write this.
+
+## ne_esp8266_mozzi
+**ne_esp8266_mozzi** is a rewrite of **ne_esp8266** using the Mozzi Library, now that Mozzi's been ported to the ESP8266. It makes use of Mozzi's ```PDM_VIA_I2S``` audio out mode to retain the same circuit as the previous version.
+
+This has to be set in the code of the Mozzi library, at the time of writing this is done in ```AudioConfigESP.h``` on line 14 which should become:
+
+```
+#define ESP_AUDIO_OUT_MODE PDM_VIA_I2S
+```
+
+More info can be found in the [Mozzi readme](https://github.com/sensorium/Mozzi#esp8266).
 
 ## ne_esp8266
 **ne_esp8266** contains the code to run on the ESP8266 (we used an ESP-01) to scan for packets and generate sound. It's written as an Arduino sketch, making use of the [ESP8266 Arduino Core](https://github.com/esp8266/Arduino).
