@@ -20,6 +20,19 @@ This has to be set in the code of the Mozzi library, at the time of writing this
 
 More info can be found in the [Mozzi readme](https://github.com/sensorium/Mozzi#esp8266).
 
+It also uses Mozzi's optional higher 32768Hz sample rate, taking advantage of the ESP8266's faster clock speed (80MHz by default, but can be set at 160MHz in the Arduino Tools menu - 10x the original rate Mozzi was written for). This is set by uncommenting line 62 of ```mozzi_config.h```:
+
+```
+#define AUDIO_RATE 32768
+```
+
+Line 15 of ```AudioConfigESP.h``` can ostensibly be used to get higher output quality by changing the PDM density, although there seems to be some noise introduced by this. 2 is default, but has a high pitched whine around 1KhZ. 16 seems to give an output without this, but could be too taxing for complex operations (it's then 16 * 32 = 512 PDM cycles to output 1 sample so...).
+
+```
+#define PDM_RESOLUTION 16
+```
+
+
 ## ne_esp8266
 **ne_esp8266** contains the code to run on the ESP8266 (we used an ESP-01) to scan for packets and generate sound. It's written as an Arduino sketch, making use of the [ESP8266 Arduino Core](https://github.com/esp8266/Arduino).
 
