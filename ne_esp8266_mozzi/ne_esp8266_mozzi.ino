@@ -1,7 +1,3 @@
-// can use other sample rates - try 44100 for higher 
-// quality or 16000 to allow for some more complex processing
-#define SAMPLE_RATE 22050 
-
 #include <Arduino.h>
 #include <MozziGuts.h>
 #include "./wifi.h"
