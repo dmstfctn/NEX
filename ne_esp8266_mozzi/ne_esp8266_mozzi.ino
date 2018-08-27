@@ -12,6 +12,7 @@ extern "C" {
 
 #include <Oscil.h>
 #include <tables/saw2048_int8.h> // table for Oscils to play
+//#include <tables/pinknoise8192_int8.h>
 #include <ADSR.h>
 
 #include <ReverbTank.h>
@@ -114,22 +115,22 @@ void setup() {
   
   startMozzi( CONTROL_RATE );
 
-  sound1.setFreq( mtof(57.f) );
-  env1.setADLevels( 200, 150 ); //0 - 255
-  env1.setTimes(25, 25, 25, 25 ); //milliseconds
+  sound1.setFreq( mtof(57.f + 0.f) );
+  env1.setADLevels( 240, 50 ); //0 - 255
+  env1.setTimes( 25, 25, 25, 25 ); //milliseconds
   env1.update();
   
-  sound2.setFreq( mtof(69.f) );
-  env2.setADLevels( 200, 150 ); //0 - 255
-  env2.setTimes(25, 25, 25, 25 ); //milliseconds
+  sound2.setFreq( mtof(69.f + 0.f) );
+  env2.setADLevels( 240, 50 ); //0 - 255
+  env2.setTimes( 25, 25, 25, 25 ); //milliseconds
   env2.update();
   
-  sound3.setFreq( mtof(81.f) );
-  env3.setADLevels( 200, 150 ); //0 - 255
-  env3.setTimes(25, 25, 25, 25 ); //milliseconds
+  sound3.setFreq( mtof(81.f + 0.f) );
+  env3.setADLevels( 240, 50 ); //0 - 255
+  env3.setTimes( 25, 25, 25, 25 ); //milliseconds
   env3.update();
 
-  //reverb.setFeebackLevel( 30 );
+  reverb.setFeebackLevel( 75 );
   lowPass.setCutoffFreq( 25 ); //0 = 0, 255 = AUDIO_RATE/2
   lowPass.setResonance( 30 );
 }
@@ -184,7 +185,7 @@ void updateControl(){
       env2.noteOff();    
     }
   }
-  if( noteOn3 ){
+  if( noteOn3  && t - noteOnAt3 > 50000 ){
     if( t - noteOnAt3 > 100000 ){
       noteOn3 = false;
     } else if( t - noteOnAt3 > 50000 ){
@@ -213,7 +214,7 @@ int updateAudio(){
     out = lowPass.next( out );
   }
 
-  out = out >> 2; //same as /4 ?
+  //out = out >> 2; //same as /4 ?
 
   //return (int16_t) map( out, -128, 127, -32768, 32767 );
   return out << 8; //same as above? (i.e. mapping from 8bit int to 16bit int)
