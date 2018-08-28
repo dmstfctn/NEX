@@ -32,6 +32,7 @@ Line 15 of ```AudioConfigESP.h``` can ostensibly be used to get higher output qu
 #define PDM_RESOLUTION 16
 ```
 
+There is a fork of Mozzi (as of 27/08/18) at [dmstfctn/Mozzi](https://github.com/dmstfctn/Mozzi/) with this configuration implemented.
 
 ## ne_esp8266
 **ne_esp8266** contains the code to run on the ESP8266 (we used an ESP-01) to scan for packets and generate sound. It's written as an Arduino sketch, making use of the [ESP8266 Arduino Core](https://github.com/esp8266/Arduino).
