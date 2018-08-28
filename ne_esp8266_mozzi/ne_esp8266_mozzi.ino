@@ -12,10 +12,10 @@ extern "C" {
 
 #include <Oscil.h>
 #include <tables/saw2048_int8.h> // table for Oscils to play
-//#include <tables/pinknoise8192_int8.h>
+//#include <tables/whitenoise8192_int8.h>
 #include <ADSR.h>
 
-#include <ReverbTank.h>
+#include "./NE_ReverbTank.h"
 #include <LowPassFilter.h>
 
 unsigned long t;
@@ -47,8 +47,10 @@ ADSR <CONTROL_RATE, AUDIO_RATE> env3;
 boolean noteOn3 = false;
 long noteOnAt3 = 0;
 
-ReverbTank reverb;
+NE_ReverbTank reverb;
 LowPassFilter lowPass;
+
+int noteOnLength = 1000; //in micros
 
 void onPacket( uint8_t *buf, uint16_t len ){
   t = mozziMicros(); //instead of millis - mozzi disables this (I think)
@@ -115,24 +117,24 @@ void setup() {
   
   startMozzi( CONTROL_RATE );
 
-  sound1.setFreq( mtof(57.f + 0.f) );
+  sound1.setFreq( mtof(57.f-24.f) );
   env1.setADLevels( 240, 50 ); //0 - 255
-  env1.setTimes( 25, 25, 25, 25 ); //milliseconds
+  env1.setTimes( 5, 5, 5, 5 ); //milliseconds
   env1.update();
   
-  sound2.setFreq( mtof(69.f + 0.f) );
+  sound2.setFreq( mtof(69.f-24.f) );
   env2.setADLevels( 240, 50 ); //0 - 255
-  env2.setTimes( 25, 25, 25, 25 ); //milliseconds
+  env2.setTimes( 5, 5, 5, 5 ); //milliseconds
   env2.update();
   
-  sound3.setFreq( mtof(81.f + 0.f) );
+  sound3.setFreq( mtof(81.f-24.f) );
   env3.setADLevels( 240, 50 ); //0 - 255
-  env3.setTimes( 25, 25, 25, 25 ); //milliseconds
+  env3.setTimes( 5, 5, 5, 5 ); //milliseconds
   env3.update();
 
-  reverb.setFeebackLevel( 75 );
-  lowPass.setCutoffFreq( 25 ); //0 = 0, 255 = AUDIO_RATE/2
-  lowPass.setResonance( 30 );
+  //reverb.setFeebackLevel( 80 );
+  lowPass.setCutoffFreq( 102 ); //0 = 0, 255 = AUDIO_RATE/2
+  lowPass.setResonance( 110 );
 }
 
 void updateControl(){
@@ -171,24 +173,24 @@ void updateControl(){
     wifi_set_channel( wifiChannel );
   }
 
-  if( noteOn1 && t - noteOnAt1 > 50000 ){
-    if( t - noteOnAt1 > 100000 ){
+  if( noteOn1 && t - noteOnAt1 > noteOnLength ){
+    if( t - noteOnAt1 > noteOnLength*2 ){
       noteOn1 = false;
-    } else if( t - noteOnAt1 > 50000 ){
+    } else if( t - noteOnAt1 > noteOnLength ){
       env1.noteOff();    
     }
   }
-  if( noteOn2 && t - noteOnAt2 > 50000 ){
-    if( t - noteOnAt2 > 100000 ){
+  if( noteOn2 && t - noteOnAt2 > noteOnLength ){
+    if( t - noteOnAt2 > noteOnLength*2 ){
       noteOn2 = false;
-    } else if( t - noteOnAt2 > 50000 ){
+    } else if( t - noteOnAt2 > noteOnLength ){
       env2.noteOff();    
     }
   }
-  if( noteOn3  && t - noteOnAt3 > 50000 ){
-    if( t - noteOnAt3 > 100000 ){
+  if( noteOn3  && t - noteOnAt3 > noteOnLength ){
+    if( t - noteOnAt3 > noteOnLength*2 ){
       noteOn3 = false;
-    } else if( t - noteOnAt3 > 50000 ){
+    } else if( t - noteOnAt3 > noteOnLength ){
       env3.noteOff();    
     }
   }
@@ -204,15 +206,17 @@ int updateAudio(){
   int out = ((int) sound1.next() * env1.next() >> 8); 
   out += ((int) sound2.next() * env2.next() >> 8);
   out += ((int) sound3.next() * env3.next() >> 8);
-    
+
+  if( button0 ){
+    out = lowPass.next( out );
+  }
+  
   if( button1 ){    
     int rvb = reverb.next( out );
     out = (out + (rvb>>2));        
   } 
   
-  if( button0 ){
-    out = lowPass.next( out );
-  }
+
 
   //out = out >> 2; //same as /4 ?
 
