@@ -1,0 +1,22 @@
+1x	100nF 		Ceramic Capacitor
+1x	10uF		Electrolytic Capacitor
+5x	10k		Resistor
+1x	1k		Resistor
+2x			Button
+1x	3.3v		Voltage Regulator
+1x	3.5mm		Mono? Stereo? audio port
+1x			Micro USB port
+1x	3.5mm		TRS audio Jack
+1x	3.5mm		TRRS audio Jack
+
+
+Possible Cables:
+
+Audio Cable
+https://www.amazon.co.uk/Movo-CFP-1-Microphone-Headphone-Smartphone/dp/B01DVCA53U/ref=sr_1_8?ie=UTF8&qid=1535202965&sr=8-8&keywords=3.5mm+TRS+to+TRRS
+
+Suction cups
+https://www.amazon.co.uk/Packet-double-suction-sucker-suckers/dp/B005JSC67S
+
+Power Cable
+https://www.startech.com/eu/Cables/USB-2.0/USB-Adapters/usb-otg-cable-micro-micro~UUUSBOTG8IN
